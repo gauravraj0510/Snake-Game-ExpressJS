@@ -2,7 +2,7 @@ export default class Snake{
     constructor(scene){
         this.scene = scene;
         this.lastMoveTime = 0;
-        this.moveInterval = 500;
+        this.moveInterval = 100;
         this.tilesize = 16;
         this.direction = Phaser.Math.Vector2.RIGHT;
         this.body = [];
@@ -33,15 +33,19 @@ export default class Snake{
         console.log(event);
         switch(event.keyCode){
             case 37:  //left
+            if(this.direction !== Phaser.Math.Vector2.RIGHT)
             this.direction = Phaser.Math.Vector2.LEFT;
                 break;
             case 38:  //up
+            if(this.direction !== Phaser.Math.Vector2.DOWN)
             this.direction = Phaser.Math.Vector2.UP;
                 break;
             case 39:  //right
+            if(this.direction !== Phaser.Math.Vector2.LEFT)
             this.direction = Phaser.Math.Vector2.RIGHT;
                 break;
             case 40:  //down
+            if(this.direction !== Phaser.Math.Vector2.UP)
             this.direction = Phaser.Math.Vector2.DOWN;
                 break;
             
@@ -56,11 +60,37 @@ export default class Snake{
     }
 
     move(){
+        let x = this.body[0].x + this.direction.x*this.tilesize;
+        let y = this.body[0].y + this.direction.y*this.tilesize;
+
+        if(this.apple.x === x && this.apple.y === y){
+            this.body.push(this.scene.add.rectangle(
+                0,0,this.tilesize,this.tilesize,0xffffff)
+                .setOrigin(0)
+            );
+            this.positionApple();
+        }
+
         for(let index = this.body.length-1 ; index > 0 ; index--){
             this.body[index].x = this.body[index-1].x;
             this.body[index].y = this.body[index-1].y;
         }
         this.body[0].x += this.direction.x*16;
         this.body[0].y += this.direction.y*16;
+
+        //Death by going off screen
+        if( this.body[0].x < 0 || 
+            this.body[0].x >= this.scene.game.config.width ||
+            this.body[0].y < 0 ||
+            this.body[0].y >= this.scene.game.config.height
+        ){
+            this.scene.scene.restart();
+        }
+
+        //Death by eating own tail
+        let tail = this.body.slice(1);
+        if(tail.some(s => s.x===this.body[0].x  && s.y===this.body[0].y)){
+            this.scene.scene.restart();
+        }
     }
 }
