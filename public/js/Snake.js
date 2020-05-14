@@ -1,4 +1,6 @@
+var score = 0;
 export default class Snake{
+    
     constructor(scene){
         this.scene = scene;
         this.lastMoveTime = 0;
@@ -6,7 +8,6 @@ export default class Snake{
         this.tilesize = 16;
         this.direction = Phaser.Math.Vector2.RIGHT;
         this.body = [];
-
         this.body.push(
             this.scene.add.rectangle(
                 this.scene.game.config.width / 2,
@@ -22,6 +23,7 @@ export default class Snake{
             this.keydown(e);
         });
     }
+    
 
     positionApple(){
         this.apple.x = Math.floor(Math.random()*this.scene.game.config.width / this.tilesize) * this.tilesize;
@@ -30,7 +32,6 @@ export default class Snake{
     }
 
     keydown(event){
-        console.log(event);
         switch(event.keyCode){
             case 37:  //left
             if(this.direction !== Phaser.Math.Vector2.RIGHT)
@@ -68,6 +69,8 @@ export default class Snake{
                 0,0,this.tilesize,this.tilesize,0xffffff)
                 .setOrigin(0)
             );
+            score = score +1;
+            console.log(score); 
             this.positionApple();
         }
 
@@ -85,12 +88,16 @@ export default class Snake{
             this.body[0].y >= this.scene.game.config.height
         ){
             this.scene.scene.restart();
+            score=0;
+            
         }
 
         //Death by eating own tail
         let tail = this.body.slice(1);
         if(tail.some(s => s.x===this.body[0].x  && s.y===this.body[0].y)){
             this.scene.scene.restart();
+            score=0;
+            
         }
     }
 }

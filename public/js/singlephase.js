@@ -1,4 +1,5 @@
 import MainScene from './MainScene.js' 
+import Snake from './Snake.js';
 
 const config = {
     width: 480,
@@ -9,3 +10,6 @@ const config = {
 };
 
 new Phaser.Game(config);
+
+var score = document.getElementById("score");
+score.textContent = Snake.scoreString;
