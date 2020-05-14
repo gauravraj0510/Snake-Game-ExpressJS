@@ -8,13 +8,25 @@ export default class Snake{
         this.body = [];
 
         this.body.push(
-            this.scene.add.rectangle(100,100,this.tilesize,this.tilesize,0xff0000).setOrigin(0)
+            this.scene.add.rectangle(
+                this.scene.game.config.width / 2,
+                this.scene.game.config.height / 2,
+                this.tilesize,
+                this.tilesize,
+                0xff0000).setOrigin(0)
             );
         this.apple = this.scene.add.rectangle(0,0,this.tilesize,this.tilesize,0x00ff00)
         .setOrigin(0);
+        this.positionApple();
         scene.input.keyboard.on('keydown', e => {
             this.keydown(e);
         });
+    }
+
+    positionApple(){
+        this.apple.x = Math.floor(Math.random()*this.scene.game.config.width / this.tilesize) * this.tilesize;
+        this.apple.y = Math.floor(Math.random()*this.scene.game.config.height / this.tilesize) * this.tilesize;
+
     }
 
     keydown(event){
